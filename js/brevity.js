@@ -2,8 +2,8 @@
  * Brevity 1.0
  *
  * Curt Husting
- * Copyright 2013, MIT License
- *
+ * Copyright 2013
+ * Creative Commons Attribution-NonCommercial 4.0 International License
 */
 
 function Brevity( container, options )
