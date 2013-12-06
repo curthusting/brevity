@@ -206,27 +206,18 @@ function Brevity( container, options )
         //  generic events
         events : function() {
             // Navigation click elements
-            // bind click event
             // up
-            navUp.onclick = function( ev ) {
-                ev.preventDefault();
-                Display.navigate( 'up', true );
-            };
+            Handle.navClick( navUp, 'up' );
+
             // down
-            navDown.onclick = function( ev ) {
-                ev.preventDefault();
-                Display.navigate( 'down', true );
-            };
+            Handle.navClick( navDown, 'down' );
+
             // left
-            navLeft.onclick = function( ev ) {
-                ev.preventDefault();
-                Display.navigate( 'left', true );
-            };
+            Handle.navClick( navLeft, 'left' );
+
             // right
-            navRight.onclick = function( ev ) {
-                ev.preventDefault();
-                Display.navigate( 'right', true );
-            };
+            Handle.navClick( navRight, 'right' );
+
             // throttled window resize listener
             var resizeEnd;
             window.onresize = function() {
@@ -241,6 +232,16 @@ function Brevity( container, options )
                 }, 250);
 
             };
+
+        },
+
+        // nav click
+        navClick : function( el, direction ) {
+            // add standard click event listener
+            el.addEventListener( 'click', function( ev ) {
+                ev.preventDefault();
+                Display.navigate( direction, true );
+            });
 
         },
 
@@ -366,15 +367,16 @@ function Brevity( container, options )
                 activeDeck,
                 // prep for touch
                 fingerCount     = 0,
+
                 startX          = 0,
                 startY          = 0,
-                startT          = 0,
-
-                diffT           = 0,
-
                 curX            = 0,
                 curY            = 0,
+
+                startT          = 0,
+                diffT           = 0,
                 curT            = 0,
+
                 // the shortest distance the user may swipe to trigger actions
                 minLength       = 20,
 
@@ -386,8 +388,6 @@ function Brevity( container, options )
             window.addEventListener( 'touchstart', function ( ev )
             {
                 if ( animating ) return;
-                // disable the standard ability to select the touched object
-                ev.preventDefault();
 
                 // get the total number of fingers touching the screen
                 fingerCount =  ev.touches.length;
@@ -663,10 +663,6 @@ function Brevity( container, options )
                     break;
 
             }
-
-            // nothing to adjust, so lets just return
-            if ( direction == 'none' ) return;
-
             // handle the navigation
             Display.navigateTo( deckIndex, slideIndex, speed );
 
