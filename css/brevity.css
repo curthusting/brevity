@@ -41,11 +41,11 @@ body {
     -ms-transition-duration: 500ms;
     -o-transition-duration: 500ms;
     transition-duration: 500ms;
-    -webkit-transform : translate(0,0) translateZ(0);
-    -moz-transform : translate(0,0) translateZ(0);
-    -ms-transform : translate(0,0) translateZ(0);
-    -o-transform : translate(0,0) translateZ(0);
-    transform : translate(0,0) translateZ(0);
+    -webkit-transform: translate(0,0) translateZ(0);
+    -moz-transform: translate(0,0) translateZ(0);
+    -ms-transform: translate(0,0) translateZ(0);
+    -o-transform: translate(0,0) translateZ(0);
+    transform: translate(0,0) translateZ(0);
     /*-webkit-transform-style: preserve-3d;*/
     -webkit-backface-visibility: hidden;
     -webkit-perspective: 1000;
@@ -60,16 +60,33 @@ body {
     display: block;
 }
 
+.slide .bg-image {
+
+    display: block;
+    position: absolute;
+    z-index: 1;
+    min-width: 100%;
+    min-height: 100%;
+    background: transparent url() center center no-repeat;
+    background-size: cover;
+
+}
+
+.slide .content {
+    position: relative;
+    z-index: 2;
+}
+
 .overview {
-    -webkit-transform : translate(-50%,-50%) scale(0.5) translate(50%,50%);
-    -moz-transform : translate(-50%,-50%) scale(0.5) translate(50%,50%);
-    -ms-transform : translate(-50%,-50%) scale(0.5) translate(50%,50%);
-    -o-transform : translate(-50%,-50%) scale(0.5) translate(50%,50%);
-    transform : translate(-50%,-50%) scale(0.5) translate(50%,50%);
+    -webkit-transform: translate(-50%,-50%) scale(0.5) translate(50%,50%);
+    -moz-transform: translate(-50%,-50%) scale(0.5) translate(50%,50%);
+    -ms-transform: translate(-50%,-50%) scale(0.5) translate(50%,50%);
+    -o-transform: translate(-50%,-50%) scale(0.5) translate(50%,50%);
+    transform: translate(-50%,-50%) scale(0.5) translate(50%,50%);
 
 }
 .warning { display: none; }
-@media only screen and (orientation : portrait) {
+@media only screen and (orientation: portrait) {
     .container { display: none; }
     .warning { display: block; }
 }
@@ -135,7 +152,7 @@ body {
 }
 .nav.left .nav-slide,
 .nav.right .nav-slide {
-    list-style: none outside none;
+    list-style:     none outside none;
     margin:         0;
     padding:        0;
     display:        table-cell;

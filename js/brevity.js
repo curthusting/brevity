@@ -4,6 +4,7 @@
  * Curt Husting
  * Copyright 2013
  * Creative Commons Attribution-NonCommercial 4.0 International License
+ *
 */
 
 function Brevity( container, options )
@@ -305,6 +306,18 @@ function Brevity( container, options )
                     // f
                     case 70:
                         Display.fullscreen();
+                        break;
+
+                    // o
+                    case 79:
+                    // esc
+                    case 27:
+                        Display.overview();
+                        break;
+
+                    // g
+                    case 71:
+                        Display.grid();
                         break;
 
                     default:
@@ -717,9 +730,27 @@ function Brevity( container, options )
             // set the animating flag to true
             animating = true;
 
+            // get existing active deck
+            var active = document.querySelector( '.active' );
+            // remove active class
+            if ( active ) classie.removeClass( active, 'active' );
+
+            // get existing current slide
+            var current = document.querySelector( '.current' );
+            // remove active class
+            if ( current ) classie.removeClass( current, 'current' );
+
             // get the active deck
             var Decks = document.querySelectorAll( '.deck' );
             deck = Decks[deckIndex];
+
+            // get the current slide
+            var slide = deck.children[slideIndex];
+
+            // add active class
+            classie.addClass( deck, 'active' );
+            // add active class
+            classie.addClass( slide, 'current' );
 
             // up and down = deck
             // handle the deck positioning
@@ -876,6 +907,22 @@ function Brevity( container, options )
 
             if ( requestMethod )  requestMethod.apply( element );
 
+        },
+
+        //
+        overview : function()
+        {
+            //
+            classie.toggleClass( container, 'overview' );
+
+        },
+
+        //
+        grid : function()
+        {
+            //
+            classie.toggleClass( container, 'grid' );
+
         }
 
     }
@@ -943,6 +990,76 @@ function Brevity( container, options )
     }
 
 }
+
+/*!
+* classie - class helper functions
+* from bonzo https://github.com/ded/bonzo
+*
+* classie.has( elem, 'my-class' ) -> true/false
+* classie.add( elem, 'my-new-class' )
+* classie.remove( elem, 'my-unwanted-class' )
+*/
+
+/*jshint browser: true, strict: true, undef: true */
+
+( function( window ) {
+
+'use strict';
+
+    // class helper functions from bonzo https://github.com/ded/bonzo
+    function classReg( className ) {
+        return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+    }
+
+    // classList support for class management
+    // altho to be fair, the api sucks because it won't accept multiple classes at once
+    var hasClass, addClass, removeClass, toggleClass;
+
+    if ( 'classList' in document.documentElement ) {
+        hasClass = function( elem, c ) {
+            return elem.classList.contains( c );
+        };
+        addClass = function( elem, c ) {
+            elem.classList.add( c );
+        };
+        removeClass = function( elem, c ) {
+            elem.classList.remove( c );
+        };
+    }
+    else {
+        hasClass = function( elem, c ) {
+            return classReg( c ).test( elem.className );
+        };
+        addClass = function( elem, c ) {
+            if ( !hasClass( elem, c ) ) {
+                elem.className = elem.className + ' ' + c;
+            }
+        };
+        removeClass = function( elem, c ) {
+            elem.className = elem.className.replace( classReg( c ), ' ' );
+        };
+        toggleClass = function( elem, c ) {
+            hasClass( elem, c ) ? elem.classList.remove( c ) : elem.classList.add( c );
+        };
+    }
+    toggleClass = function( elem, c ) {
+        hasClass( elem, c ) ? removeClass( elem, c ) : addClass( elem, c );
+    };
+
+    window.classie = {
+        // full names
+        hasClass: hasClass,
+        addClass: addClass,
+        removeClass: removeClass,
+        toggleClass: toggleClass,
+        // short names
+        has: hasClass,
+        add: addClass,
+        remove: removeClass,
+        toggle: toggleClass
+    };
+
+})( window );
 
 if ( window.jQuery || window.Zepto ) {
     (function($) {
