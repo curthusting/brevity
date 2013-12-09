@@ -82,10 +82,6 @@ function Brevity( container, options )
 
     // initialize new instance
     function init() {
-        // need to set these here for resize to re-trigger
-        winW = window.innerWidth,
-        winH = window.innerHeight;
-
         // check url for active slide / deck
         var hash = window.location.hash,
             indexH, indexV;
@@ -153,7 +149,12 @@ function Brevity( container, options )
     var Build = {
         // build the layout
         layout : function() {
+            // need to set these here for resize to re-trigger
+            winW = window.innerWidth,
+            winH = window.innerHeight;
+
             // add necessary styling to dom elements
+            // @TODO update the styling to be inline, or remove existing css prior to adding new css
             var css = document.createElement( 'style' );
             css.type = 'text/css';
 
@@ -168,7 +169,7 @@ function Brevity( container, options )
             // deck element styling
             var deckCSS = ".deck {\nwidth: " + winW + "px;\n}";
             // slide element styling
-            var slideCSS = ".slide {\nwidth: " + winW + "px;\nheight: " + winH + "px;\n}";
+            var slideCSS = ".slide {\nwidth: " + winW + "px;\nheight: " + winH + "px;\n}\n.bg-image {\nmin-width: " + winW + "px;\nmin-height: " + winH + "px;\n}";
 
             // individual deck element styling
             for (var i = 0, el; el = decks[i]; i++) {
@@ -227,8 +228,10 @@ function Brevity( container, options )
 
                 // check to see if window size has changed based on supplied interval
                 resizeEnd = setTimeout(function() {
-                    // if the window size has not changed in the supplied interval
-                    init();
+                    // refresh the Build.layout()
+                    Build.layout();
+                    // update the positions
+                    Display.navigateTo( deckIndex, slideIndex );
 
                 }, 250);
 
@@ -254,24 +257,35 @@ function Brevity( container, options )
                 var keyCode = ev.keyCode || ev.which;
                 if ( debug ) console.log('key pressed ~ '+ ev.key +' - '+ keyCode);
                 switch(keyCode) {
-
                     // left arrow
                     case 37:
+                        // prevent default scrolling
+                        ev.preventDefault();
+
                         Display.navigate( 'left', true );
                         break;
 
                     // up arrow
                     case 38:
+                        // prevent default scrolling
+                        ev.preventDefault();
+
                         Display.navigate( 'up', true );
                         break;
 
                     // right arrow
                     case 39:
+                        // prevent default scrolling
+                        ev.preventDefault();
+
                         Display.navigate( 'right', true );
                         break;
 
                     // down arrow
                     case 40:
+                        // prevent default scrolling
+                        ev.preventDefault();
+
                         Display.navigate( 'down', true );
                         break;
 
@@ -320,8 +334,27 @@ function Brevity( container, options )
                         Display.grid();
                         break;
 
+                    // enter
+                    case 13:
+                        // if we are in overview mode, assume they are trying to activate current slide
+                        if ( classie.hasClass( container, 'overview' ) )
+                        {
+                            Display.overview()
+                        }
+                        // if we are in grid mode, assume they are trying to activate current slide
+                        else if ( classie.hasClass( container, 'grid' ) )
+                        {
+                            Display.grid()
+                        }
+                        else
+                        {
+                            // navigate to the nest slide
+                            Display.navigate( 'down', true );
+                        }
+                        break;
+
                     default:
-                        if ( debug ) console.error('What did you do, Ray? Unsupported key pressed ~ '+ ev.key +' - '+ keyCode);
+                        console.error('What did you do, Ray? Unsupported key pressed ~ '+ ev.key +' - '+ keyCode);
                         break;
                 }
             })
@@ -751,6 +784,7 @@ function Brevity( container, options )
             classie.addClass( deck, 'active' );
             // add active class
             classie.addClass( slide, 'current' );
+            // classie.addClass( slide, 'animate' );
 
             // up and down = deck
             // handle the deck positioning
