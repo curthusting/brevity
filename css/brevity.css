@@ -130,7 +130,7 @@ body {
 
 }
 
-.container.overview .deck.active .slide, {
+.container.overview .deck.active .slide {
     -webkit-transform: translate(-100%, -100%) scale(1.0) translate(100%, 100%);
     -moz-transform: translate(-100%, -100%) scale(1.0) translate(100%, 100%);
     -ms-transform: translate(-100%, -100%) scale(1.0) translate(100%, 100%);
