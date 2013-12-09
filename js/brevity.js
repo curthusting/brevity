@@ -127,16 +127,18 @@ function Brevity( container, options )
 
         // lets only implement what we need
         // even if specified, only implement touch if this is a touch device
-        if ( options.touch && browser.touch )
-        {
+        if ( options.touch && browser.touch ) {
+
             Handle.touch();
-        }
-        else if ( options.mouse || options.keyboard )
-        {
+
+        } else if ( options.mouse || options.keyboard ) {
+
             if ( options.keyboard ) Handle.keyboard();
             if ( options.mouse ) Handle.mouse();
+
         }
 
+        // navigate to specified index
         Display.navigateTo( deckIndex, slideIndex, 0 )
 
     }
@@ -252,8 +254,8 @@ function Brevity( container, options )
         // keyboard events
         keyboard : function() {
             // add event listener
-            document.addEventListener( 'keydown', function( ev )
-            {
+            document.addEventListener( 'keydown', function( ev ) {
+
                 var keyCode = ev.keyCode || ev.which;
                 if ( debug ) console.log('key pressed ~ '+ ev.key +' - '+ keyCode);
                 switch(keyCode) {
@@ -337,26 +339,29 @@ function Brevity( container, options )
                     // enter
                     case 13:
                         // if we are in overview mode, assume they are trying to activate current slide
-                        if ( classie.hasClass( container, 'overview' ) )
-                        {
+                        if ( classie.hasClass( container, 'overview' ) ) {
+                            //
                             Display.overview()
+
                         }
                         // if we are in grid mode, assume they are trying to activate current slide
-                        else if ( classie.hasClass( container, 'grid' ) )
-                        {
+                        else if ( classie.hasClass( container, 'grid' ) ) {
+                            //
                             Display.grid()
-                        }
-                        else
-                        {
+
+                        } else {
                             // navigate to the nest slide
                             Display.navigate( 'down', true );
+
                         }
                         break;
 
                     default:
                         console.error('What did you do, Ray? Unsupported key pressed ~ '+ ev.key +' - '+ keyCode);
                         break;
+
                 }
+
             })
 
         },
@@ -366,8 +371,7 @@ function Brevity( container, options )
             // set up mousewheel event cross browser
             var mousewheelEvent = ( /Firefox/i.test( navigator.userAgent ) ) ? "DOMMouseScroll" : "mousewheel";
             // add event listener
-            window.addEventListener( mousewheelEvent, function ( ev )
-            {
+            window.addEventListener( mousewheelEvent, function ( ev ) {
                 // let not waste any time
                 if ( animating ) return;
 
@@ -376,29 +380,26 @@ function Brevity( container, options )
                 if (!ev) ev = window.event;
 
                 // a little math to unify delta value
-                if (ev.wheelDelta)
-                {
+                if (ev.wheelDelta) {
+                    //
                     delta = ev.wheelDelta/120;
                     if (window.opera) delta = -delta;
 
                 }
-                else if (ev.detail)
-                {
+                else if (ev.detail) {
+                    //
                     delta = -ev.detail/3;
                 }
 
                 // based on delta value, handle accordingly
-                if (delta)
-                {
+                if (delta) {
                     // scrolling down
-                    if (delta < 0)
-                    {
+                    if (delta < 0) {
+                        //
                         Display.navigate( 'down', true );
 
-                    }
-                    // scrolling up
-                    else
-                    {
+                    } else {
+                        // scrolling up
                         Display.navigate( 'up', true );
 
                     }
@@ -431,16 +432,15 @@ function Brevity( container, options )
                 remaining       = 0,
                 speed           = 0;
             //
-            window.addEventListener( 'touchstart', function ( ev )
-            {
+            window.addEventListener( 'touchstart', function ( ev ) {
+                //
                 if ( animating ) return;
 
                 // get the total number of fingers touching the screen
                 fingerCount =  ev.touches.length;
                 // since we're looking for a swipe (single finger) and not a gesture (multiple fingers),
                 // check that only one finger was used
-                if ( fingerCount == 1 )
-                {
+                if ( fingerCount == 1 ) {
                     // get the coordinates
                     startX =  ev.touches[0].pageX;
                     startY =  ev.touches[0].pageY;
@@ -448,17 +448,14 @@ function Brevity( container, options )
                     // set timestamp for start
                     startT = +Date.now();
 
-                }
-                else
-                {
+                } else {
                     // more than one finger touched so cancel
                     touchCancel( ev );
                 }
 
             })
 
-            window.addEventListener( 'touchmove', function ( ev )
-            {
+            window.addEventListener( 'touchmove', function ( ev ) {
                 // let's not waste time
                 if ( animating ) return;
                 // check that only one finger was used
@@ -486,55 +483,44 @@ function Brevity( container, options )
                     if ( Math.abs( distance.x ) < minLength && Math.abs( distance.y ) < minLength ) return false;
 
                     // determine if the user is swiping the "x" or "y" axis
-                    if ( Math.abs( distance.x ) > Math.abs( distance.y ) )
-                    {
+                    if ( Math.abs( distance.x ) > Math.abs( distance.y ) ) {
                         // make sure we aren't already interaction on the opposite axis
                         // OR if we have already determined the axis
-                        if ( ! lockDirection || lockDirection == 'right' || lockDirection == 'left' )
-                        {
+                        if ( ! lockDirection || lockDirection == 'right' || lockDirection == 'left' ) {
                             // handle the realtime animation
                             Display.move( -( distance.x ), 0 )
                             remaining = winW - Math.abs( distance.x );
 
                             // determine which direction on the "x" axis
                             // swiping from right to left
-                            if ( distance.x > 0 )
-                            {
+                            if ( distance.x > 0 ) {
                                 // lock direction to avoid users touching in a circular motion
                                 lockDirection = 'right';
 
-                            }
-                            // swiping from left to right
-                            else if ( distance.x < 0 )
-                            {
+                            } else if ( distance.x < 0 ) {
+                                // swiping from left to right
                                 // lock direction to avoid users touching in a circular motion
                                 lockDirection = 'left';
 
                             }
                         }
 
-                    }
-                    else
-                    {
+                    } else {
                         // make sure we aren't already interaction on the opposite axis
                         // OR if we have already determined the axis
-                        if ( ! lockDirection || lockDirection == 'down' || lockDirection == 'up' )
-                        {
+                        if ( ! lockDirection || lockDirection == 'down' || lockDirection == 'up' ) {
                             // handle the realtime animation
                             Display.move( 0, -(distance.y) )
                             remaining = winH - Math.abs( distance.y );
 
                             // determine which direction on the "y" axis
                             // swiping from top to bottom
-                            if ( distance.y > 0 )
-                            {
+                            if ( distance.y > 0 ) {
                                 // lock direction to avoid users touching in a circular motion
                                 lockDirection = 'down';
 
-                            }
-                            // swiping from bottom to top
-                            else if ( distance.y < 0 )
-                            {
+                            } else if ( distance.y < 0 ) {
+                                // swiping from bottom to top
                                 // lock direction to avoid users touching in a circular motion
                                 lockDirection = 'up';
 
@@ -551,8 +537,7 @@ function Brevity( container, options )
 
             })
 
-            window.addEventListener( 'touchend', function ( ev )
-            {
+            window.addEventListener( 'touchend', function ( ev ) {
                 // lets make sure a direction has been set
                 if ( ! lockDirection ) return;
 
@@ -566,15 +551,13 @@ function Brevity( container, options )
 
             })
 
-            window.addEventListener( 'touchcancel', function ( ev )
-            {
+            window.addEventListener( 'touchcancel', function ( ev ) {
                 // rest all variables
                 touchCancel( ev );
 
             })
 
-            function touchCancel()
-            {
+            function touchCancel() {
                 // reset the variables back to default values
                 fingerCount     = 0,
                 startX          = 0,
@@ -656,8 +639,9 @@ function Brevity( container, options )
 
                 case 'down':
                     // lets check to see if the active slide is the last deck
-                    if ( slideIndex ==  decks[deckIndex]['slides'].length-1 ) {
+                    if ( slideIndex == decks[deckIndex]['slides'].length-1 ) {
                         // this is the last slide in the active deck, handle accordingly
+
                         if ( ! options.touch && options.continuous ) {
                             // since this is the last slide, lets attempt to take them to the next deck
                             direction = 'right';
@@ -763,6 +747,7 @@ function Brevity( container, options )
             // set the animating flag to true
             animating = true;
 
+            // Update active and current classes
             // get existing active deck
             var active = document.querySelector( '.active' );
             // remove active class
@@ -778,13 +763,12 @@ function Brevity( container, options )
             deck = Decks[deckIndex];
 
             // get the current slide
-            var slide = deck.children[slideIndex];
+            if ( deck ) var slide = deck.children[slideIndex];
 
             // add active class
-            classie.addClass( deck, 'active' );
+            if ( deck ) classie.addClass( deck, 'active' );
             // add active class
-            classie.addClass( slide, 'current' );
-            // classie.addClass( slide, 'animate' );
+            if ( slide ) classie.addClass( slide, 'current' );
 
             // up and down = deck
             // handle the deck positioning
